@@ -10,11 +10,11 @@ import schema
 
 OSM_PATH = "data/louisville_small.osm"
 
-NODES_PATH = "output/nodes.csv"
+NODES_PATH     = "output/nodes.csv"
 NODE_TAGS_PATH = "output/nodes_tags.csv"
-WAYS_PATH = "output/ways.csv"
+WAYS_PATH      = "output/ways.csv"
 WAY_NODES_PATH = "output/ways_nodes.csv"
-WAY_TAGS_PATH = "output/ways_tags.csv"
+WAY_TAGS_PATH  = "output/ways_tags.csv"
 
 LOWER_COLON = re.compile(r'^([a-z]|_)+:([a-z]|_)+')
 PROBLEMCHARS = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
@@ -22,10 +22,10 @@ PROBLEMCHARS = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
 SCHEMA = schema.schema
 
 # Make sure the fields order in the csvs matches the column order in the sql table schema
-NODE_FIELDS = ['id', 'lat', 'lon', 'user', 'uid', 'version', 'changeset', 'timestamp']
+NODE_FIELDS      = ['id', 'lat', 'lon', 'user', 'uid', 'version', 'changeset', 'timestamp']
 NODE_TAGS_FIELDS = ['id', 'key', 'value', 'type']
-WAY_FIELDS = ['id', 'user', 'uid', 'version', 'changeset', 'timestamp']
-WAY_TAGS_FIELDS = ['id', 'key', 'value', 'type']
+WAY_FIELDS       = ['id', 'user', 'uid', 'version', 'changeset', 'timestamp']
+WAY_TAGS_FIELDS  = ['id', 'key', 'value', 'type']
 WAY_NODES_FIELDS = ['id', 'node_id', 'position']
 
 
@@ -36,7 +36,7 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
     node_attribs = {}
     way_attribs = {}
     way_nodes = []
-    tags = []  # Handle secondary tags the same way for both node and way elements
+    tags = []
 
     
     node_element = element.tag == 'node'
@@ -49,7 +49,7 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
         for idx, nd in enumerate(element.iter('nd')):
             way_node = {'id': element.attrib['id'],
                         'node_id': nd.attrib['ref'],
-                        'position':str(idx),
+                        'position': idx,
                        }
             
             way_nodes.append(way_node)
@@ -105,20 +105,6 @@ def validate_element(element, validator, schema=SCHEMA):
         
         raise Exception(message_string.format(field, error_string))
 
-
-class UnicodeDictWriter(csv.DictWriter, object):
-    """Extend csv.DictWriter to handle Unicode input"""
-
-    def writerow(self, row):
-        super(UnicodeDictWriter, self).writerow({
-            k: v.encode('utf-8') for k, v in row.items()
-        })
-
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)
-
-
 # ================================================== #
 #               Main Function                        #
 # ================================================== #
@@ -131,11 +117,11 @@ def process_map(file_in, validate):
          codecs.open(WAY_NODES_PATH, 'w') as way_nodes_file, \
          codecs.open(WAY_TAGS_PATH, 'w') as way_tags_file:
 
-        nodes_writer = UnicodeDictWriter(nodes_file, NODE_FIELDS)
-        node_tags_writer = UnicodeDictWriter(nodes_tags_file, NODE_TAGS_FIELDS)
-        ways_writer = UnicodeDictWriter(ways_file, WAY_FIELDS)
-        way_nodes_writer = UnicodeDictWriter(way_nodes_file, WAY_NODES_FIELDS)
-        way_tags_writer = UnicodeDictWriter(way_tags_file, WAY_TAGS_FIELDS)
+        nodes_writer     = csv.DictWriter(nodes_file, NODE_FIELDS)
+        node_tags_writer = csv.DictWriter(nodes_tags_file, NODE_TAGS_FIELDS)
+        ways_writer      = csv.DictWriter(ways_file, WAY_FIELDS)
+        way_nodes_writer = csv.DictWriter(way_nodes_file, WAY_NODES_FIELDS)
+        way_tags_writer  = csv.DictWriter(way_tags_file, WAY_TAGS_FIELDS)
 
         nodes_writer.writeheader()
         node_tags_writer.writeheader()
@@ -153,7 +139,8 @@ def process_map(file_in, validate):
 
                 if element.tag == 'node':
                     nodes_writer.writerow(el['node'])
-                    node_tags_writer.writerows(el['node_tags'])
+                    for row in el['node_tags']:
+                        node_tags_writer.writerow(row)
                 elif element.tag == 'way':
                     ways_writer.writerow(el['way'])
                     way_nodes_writer.writerows(el['way_nodes'])
@@ -163,6 +150,5 @@ def process_map(file_in, validate):
 if __name__ == '__main__':
     # Note: Validation is ~ 10X slower. For the project consider using a small
     # sample of the map when validating.
-    process_map(OSM_PATH, validate=True)
+    process_map(OSM_PATH, validate=False)
     print("Finished")
-
