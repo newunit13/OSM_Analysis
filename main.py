@@ -49,7 +49,7 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
         for idx, nd in enumerate(element.iter('nd')):
             way_node = {'id': element.attrib['id'],
                         'node_id': nd.attrib['ref'],
-                        'position':idx,
+                        'position':str(idx),
                        }
             
             way_nodes.append(way_node)
@@ -164,4 +164,5 @@ if __name__ == '__main__':
     # Note: Validation is ~ 10X slower. For the project consider using a small
     # sample of the map when validating.
     process_map(OSM_PATH, validate=True)
+    print("Finished")
 
