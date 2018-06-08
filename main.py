@@ -117,11 +117,11 @@ def process_map(file_in, validate):
          codecs.open(WAY_NODES_PATH, 'w') as way_nodes_file, \
          codecs.open(WAY_TAGS_PATH, 'w') as way_tags_file:
 
-        nodes_writer     = csv.DictWriter(nodes_file, NODE_FIELDS)
-        node_tags_writer = csv.DictWriter(nodes_tags_file, NODE_TAGS_FIELDS)
-        ways_writer      = csv.DictWriter(ways_file, WAY_FIELDS)
-        way_nodes_writer = csv.DictWriter(way_nodes_file, WAY_NODES_FIELDS)
-        way_tags_writer  = csv.DictWriter(way_tags_file, WAY_TAGS_FIELDS)
+        nodes_writer     = csv.DictWriter(nodes_file, NODE_FIELDS, lineterminator='\n')
+        node_tags_writer = csv.DictWriter(nodes_tags_file, NODE_TAGS_FIELDS, lineterminator='\n')
+        ways_writer      = csv.DictWriter(ways_file, WAY_FIELDS, lineterminator='\n')
+        way_nodes_writer = csv.DictWriter(way_nodes_file, WAY_NODES_FIELDS, lineterminator='\n')
+        way_tags_writer  = csv.DictWriter(way_tags_file, WAY_TAGS_FIELDS, lineterminator='\n')
 
         nodes_writer.writeheader()
         node_tags_writer.writeheader()
