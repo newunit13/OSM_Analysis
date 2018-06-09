@@ -1,5 +1,4 @@
 import csv
-import codecs
 import pprint
 import re
 import xml.etree.cElementTree as ET
@@ -111,11 +110,11 @@ def validate_element(element, validator, schema=SCHEMA):
 def process_map(file_in, validate):
     """Iteratively process each XML element and write to csv(s)"""
 
-    with codecs.open(NODES_PATH, 'w') as nodes_file, \
-         codecs.open(NODE_TAGS_PATH, 'w') as nodes_tags_file, \
-         codecs.open(WAYS_PATH, 'w') as ways_file, \
-         codecs.open(WAY_NODES_PATH, 'w') as way_nodes_file, \
-         codecs.open(WAY_TAGS_PATH, 'w') as way_tags_file:
+    with open(NODES_PATH, 'w') as nodes_file, \
+         open(NODE_TAGS_PATH, 'w') as nodes_tags_file, \
+         open(WAYS_PATH, 'w') as ways_file, \
+         open(WAY_NODES_PATH, 'w') as way_nodes_file, \
+         open(WAY_TAGS_PATH, 'w') as way_tags_file:
 
         nodes_writer     = csv.DictWriter(nodes_file, NODE_FIELDS, lineterminator='\n')
         node_tags_writer = csv.DictWriter(nodes_tags_file, NODE_TAGS_FIELDS, lineterminator='\n')
