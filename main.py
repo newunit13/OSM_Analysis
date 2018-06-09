@@ -7,13 +7,13 @@ import cerberus
 
 import schema
 
-OSM_PATH = "data/louisville_small.osm"
+OSM_PATH = "raw_data/louisville_small.osm"
 
-NODES_PATH     = "output/nodes.csv"
-NODE_TAGS_PATH = "output/nodes_tags.csv"
-WAYS_PATH      = "output/ways.csv"
-WAY_NODES_PATH = "output/ways_nodes.csv"
-WAY_TAGS_PATH  = "output/ways_tags.csv"
+NODES_PATH     = "csv_data/nodes.csv"
+NODE_TAGS_PATH = "csv_data/nodes_tags.csv"
+WAYS_PATH      = "csv_data/ways.csv"
+WAY_NODES_PATH = "csv_data/ways_nodes.csv"
+WAY_TAGS_PATH  = "csv_data/ways_tags.csv"
 
 LOWER_COLON = re.compile(r'^([a-z]|_)+:([a-z]|_)+')
 PROBLEMCHARS = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
